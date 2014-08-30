@@ -3,27 +3,15 @@ var Schema   = mongoose.Schema;
 
 // name validators
 
-function name_format(value) {
-    return value.indexOf('_') != -1;
-}
-
-function name_size(value) {
-    return value.length > 3 && value.length < 20;
-}
-
 var name_validator = [
-    { validator: name_format, msg: 'module name must contain underscore' },
-    { validator: name_size, msg: 'module name must be greater than 3 and less than 20' }
+    { validator: /^(.*)_(.*)$/, msg: 'module name must contain underscore' },
+    { validator: /^[a-zA-Z_]{3,20}$/, msg: 'module name must be greater or equal than 3 and less or equal than 20' }
 ];
 
 // version validator
 
-function version_format() {
-
-}
-
 var version_validator = [
-    { validator: /\d.\d.\d/, msg: 'version is not in format x.x.x'}
+    { validator: /^\d.\d.\d$/, msg: 'version is not in format x.x.x'}
 ];
 
 var ModuleSchema = new Schema({
