@@ -11,7 +11,7 @@ var name_validator = [
 // version validator
 
 var version_validator = [
-    { validator: /^\d.\d.\d$/, msg: 'version is not in format x.x.x'}
+    { validator: /^\d{1,3}.\d{1,3}.\d{1,4}$/, msg: 'version is not in format x.x.x'}
 ];
 
 var ModuleSchema = new Schema({
