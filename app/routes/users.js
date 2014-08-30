@@ -2,6 +2,10 @@ var express = require('express');
 var router = express.Router();
 var User = require('../models/user');
 
+function isEmpty(obj) {
+  return !Object.keys(obj).length;
+}
+
 module.exports = function(passport) {
 
     router.route('/')
@@ -9,11 +13,9 @@ module.exports = function(passport) {
         .get(function(req, res) {
 
             User.find({},  { _id: false, __v: false, password: false }, function(err, users) {
-                if (err) { res.json({ message: err }); }
-                else
-                {
-                    res.json(users);
-                }
+                if (err) { res.json({ message: err }); return; }
+
+                res.json(users);
             });
 
         })
@@ -27,11 +29,9 @@ module.exports = function(passport) {
             user.email    = req.body.email;
 
             user.save(function(err) {
-                if (err) { res.json({ message: err }); }
-                else
-                {
-                    res.json({ message: 'User created' });
-                }
+                if (err) { res.json({ message: err }); return; }
+
+                res.json({ message: 'user created' });
             });
 
         });
@@ -41,33 +41,34 @@ module.exports = function(passport) {
         .get(function(req, res) {
 
             User.find({ username: req.params.user_username }, { _id: false, __v: false, password: false }, function(err, user) {
-                if (err) { res.json({ message: err }); }
-                else
-                {
-                    res.json(user);
-                }
+                if (err) { res.json({ message: err }); return; }
+
+                res.json(user);
             });
 
         })
 
-        .put(function(req, res) {
+        .put(passport.authenticate('bearer', { session: false }), function(req, res) {
 
-            User.find({ username: req.params.user_username }, function(err, user) {
-                if (err) { res.json({ message: err }); }
-                else
-                {
-                    user.username = req.body.username;
-                    user.password = req.body.password;
-                    user.email    = req.body.email;
+            if(req.user.username != req.params.user_username)
+            {
+                res.status(401).json({ message: 'you are not allowed to modify profile of another user' });
+                return;
+            }
 
-                    user.save(function(err) {
-                        if (err) { res.json({ message: err }); }
-                        else
-                        {
-                            res.json({ message: 'User updated' });
-                        }
-                    });
-                }
+            User.findOne({ username: req.params.user_username }, function(err, user) {
+                if (err) { res.json({ message: err }); return; }
+                if (isEmpty(user)) { res.status(404).json({ message: 'no user found' }); return; }
+
+                user.username = req.body.username;
+                user.password = req.body.password;
+                user.email    = req.body.email;
+
+                user.save(function(err) {
+                    if (err) { res.json({ message: err }); return; }
+
+                    res.json({ message: 'user updated' });
+                });
             });
 
         })
@@ -75,11 +76,9 @@ module.exports = function(passport) {
         .delete(function(req, res) {
 
             User.remove({ username: req.params.user_username }, function(err, user) {
-                if (err) { res.json({ message: err }); }
-                else
-                {
-                    res.json({ message: 'User deleted' });
-                }
+                if (err) { res.json({ message: err }); return; }
+
+                res.json({ message: 'user deleted' });
             });
 
         })

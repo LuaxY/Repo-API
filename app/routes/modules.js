@@ -19,11 +19,9 @@ module.exports = function(passport) {
         .get(passport.authenticate('bearer', { session: false }), function(req, res) {
 
             Module.find({}, { _id: false, __v: false }, function(err, modules) {
-                if (err) { res.json({ message: err }); }
-                else
-                {
-                    res.json(modules);
-                }
+                if (err) { res.json({ message: err }); return; }
+
+                res.json(modules);
             });
 
         })
@@ -42,11 +40,9 @@ module.exports = function(passport) {
             module.lastUpdateDate = currentDate();
 
             module.save(function(err) {
-                if (err) { res.json(err); }
-                else
-                {
-                    res.json({ message: 'module created' });
-                }
+                if (err) { res.json(err); return; }
+
+                res.json({ message: 'module created' });
             });
 
         });
@@ -56,12 +52,10 @@ module.exports = function(passport) {
         .get(function(req, res) {
 
             Module.find({ name: req.params.module_name }, { _id: false, __v: false }, function(err, module) {
-                if (err) { res.json({ message: err }); }
-                else if (isEmpty(module)) { res.status(404).json({ message: 'no module found' }); }
-                else
-                {
-                    res.json(module);
-                }
+                if (err) { res.json({ message: err }); return; }
+                if (isEmpty(module)) { res.status(404).json({ message: 'no module found' }); return; }
+
+                res.json(module);
             });
 
         })
@@ -69,26 +63,22 @@ module.exports = function(passport) {
         .put(function(req, res) {
 
             Module.find({ name: req.params.module_name }, function(err, module) {
-                if (err) { res.json({ message: err }); }
-                else
-                {
-                    module.name           = req.body.name;
-                    //module.author         = req.body.author;
-                    module.url            = req.body.url;
-                    module.description    = req.body.description;
-                    module.category       = req.body.category;
-                    module.version        = req.body.version;
-                    module.dofusVersion   = req.body.dofusVersion;
-                    module.lastUpdateDate = currentDate();
+                if (err) { res.json({ message: err }); return; }
 
-                    module.save(function(err) {
-                        if (err) { res.json(err); }
-                        else
-                        {
-                            res.json({ message: 'module updated' });
-                        }
-                    });
-                }
+                module.name           = req.body.name;
+                //module.author         = req.body.author;
+                module.url            = req.body.url;
+                module.description    = req.body.description;
+                module.category       = req.body.category;
+                module.version        = req.body.version;
+                module.dofusVersion   = req.body.dofusVersion;
+                module.lastUpdateDate = currentDate();
+
+                module.save(function(err) {
+                    if (err) { res.json(err); return; }
+
+                    res.json({ message: 'module updated' });
+                });
                 
             });
 
@@ -97,11 +87,9 @@ module.exports = function(passport) {
         .delete(function(req, res) {
 
             Module.remove({ name: req.params.module_name }, function(err, module) {
-                if (err) { res.json({ message: err }); }
-                else
-                {
-                    res.json({ message: 'module deleted' });
-                }
+                if (err) { res.json({ message: err }); return; }
+
+                res.json({ message: 'module deleted' });
             });
 
         })
