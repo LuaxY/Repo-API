@@ -1,7 +1,7 @@
 module.exports = function(app, passport, auth) {
 
     app.use(function(req, res, next) {
-        console.log(req.method + " " + req.originalUrl + ' ( Accept: ' + req.headers.accept + ' )');
+        console.log(req.method + " " + req.originalUrl);
         next();
     });
 
