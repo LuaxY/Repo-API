@@ -18,5 +18,16 @@ module.exports = function(passport) {
         });
     }));
 
-    return;
+    return {
+
+        ensureAuthenticated: function(req, res, next) {
+            passport.authenticate('bearer', function(err, user, info) {
+                if (err) { return next(err); }
+                if (!user) { return res.json({ message: 'Require valid user authentication' }); }
+
+                req.user = user;
+                return next();
+            })(req, res, next);
+        }
+    };
 }
