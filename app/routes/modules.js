@@ -9,13 +9,13 @@ function currentDate()
 }
 
 function isEmpty(obj) {
-  return !Object.keys(obj).length;
+    if(obj == null) { return true; }
+    if(typeof obj == 'object') { return !Object.keys(obj).length; }
+    return false;
 }
 
 function update(current, update) {
-    if(!update || update == '' || update == current)
-        return current;
-
+    if (!update || update == '' || update == current) { return current; }
     return update;
 }
 
@@ -23,17 +23,17 @@ module.exports = function(passport) {
 
     router.route('/')
 
-        .get(passport.authenticate('bearer', { session: false }), function(req, res) {
+        .get(function(req, res) {
 
             Module.find({}, { _id: false, __v: false }, function(err, modules) {
-                if (err) { res.json({ message: err }); return; }
+                if (err) { return res.json({ message: err }); }
 
                 res.json(modules);
             });
 
         })
 
-        .post(function(req, res) {
+        .post(passport.authenticate('bearer', { session: false }), function(req, res) {
 
             var module = new Module();
 
@@ -47,7 +47,7 @@ module.exports = function(passport) {
             module.lastUpdateDate = currentDate();
 
             module.save(function(err) {
-                if (err) { res.json(err); return; }
+                if (err) { return res.json(err); }
 
                 res.json({ message: 'module created' });
             });
@@ -59,18 +59,18 @@ module.exports = function(passport) {
         .get(function(req, res) {
 
             Module.findOne({ name: req.params.module_name }, { _id: false, __v: false }, function(err, module) {
-                if (err) { res.json({ message: err }); return; }
-                if (isEmpty(module)) { res.status(404).json({ message: 'no module found' }); return; }
+                if (err) { return res.json({ message: err }); }
+                if (isEmpty(module)) { return res.status(404).json({ message: 'module not found' }); }
 
                 res.json(module);
             });
 
         })
 
-        .put(function(req, res) {
+        .put(passport.authenticate('bearer', { session: false }), function(req, res) {
 
             Module.findOne({ name: req.params.module_name }, function(err, module) {
-                if (err) { res.json({ message: err }); return; }
+                if (err) { return res.json({ message: err }); }
 
                 module.name           = update(module.name,         req.body.name);
                 module.url            = update(module.url,          req.body.url);
@@ -81,7 +81,7 @@ module.exports = function(passport) {
                 module.lastUpdateDate = currentDate();
 
                 module.save(function(err) {
-                    if (err) { res.json(err); return; }
+                    if (err) { return res.json(err); }
 
                     res.json({ message: 'module updated' });
                 });
@@ -90,10 +90,10 @@ module.exports = function(passport) {
 
         })
 
-        .delete(function(req, res) {
+        .delete(passport.authenticate('bearer', { session: false }), function(req, res) {
 
             Module.remove({ name: req.params.module_name }, function(err, module) {
-                if (err) { res.json({ message: err }); return; }
+                if (err) { return res.json({ message: err }); }
 
                 res.json({ message: 'module deleted' });
             });
