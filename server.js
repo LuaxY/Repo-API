@@ -21,8 +21,9 @@ router.use(function(req, res, next) {
 
 router.get('/', function(req, res) {
     res.json({ 
-        users_url: '/api/users',
-        modules_urls: '/api/modules'
+        users_url: '/api/users/{user}',
+        modules_urls: '/api/modules/{module}',
+
     });
 });
 
