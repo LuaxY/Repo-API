@@ -11,7 +11,7 @@ module.exports = function(passport) {
 
             Module.find({ author: req.params.username }, { _id: false, __v: false }, function(err, module) {
                 if (err) { return res.json({ message: err }); }
-                if (utils.isEmpty(module)) { return res.status(404).json({ message: 'no modules found' }); }
+                //if (utils.isEmpty(module)) { return res.status(404).json({ message: 'no modules found' }); }
 
                 res.json(module);
             });
@@ -20,12 +20,25 @@ module.exports = function(passport) {
 
         get: function(req, res) {
 
-            Module.findOne({ author: req.params.username, name: req.params.repo }, { _id: false, __v: false }, function(err, module) {
-                if (err) { return res.json({ message: err }); }
-                if (utils.isEmpty(module)) { return res.status(404).json({ message: 'module not found' }); }
+            if(req.params.repo.indexOf('.json') != -1)
+            {
+                req.params.repo = req.params.repo.replace('.json', '');
 
-                res.json(module);
-            });
+                Module.find({ author: req.params.username, name: req.params.repo }, { _id: false, __v: false }, function(err, module) {
+                    if (err) { return res.json({ message: err }); }
+
+                    res.json(module);
+                });
+            }
+            else
+            {
+                Module.findOne({ author: req.params.username, name: req.params.repo }, { _id: false, __v: false }, function(err, module) {
+                    if (err) { return res.json({ message: err }); }
+                    if (utils.isEmpty(module)) { return res.status(404).json({ message: 'module not found' }); }
+
+                    res.json(module);
+                });
+            }
 
         },
 
@@ -38,6 +51,19 @@ module.exports = function(passport) {
         },
 
         delete: function(req, res) {
+
+        },
+
+        search: function(req, res) {
+
+            req.params.repo = req.params.repo.replace('.json', '');
+
+            Module.find({ author: req.params.username, name: { $regex : '.*'+req.params.repo+'.*' } }, { _id: false, __v: false }, function(err, module) {
+                if (err) { return res.json({ message: err }); }
+                //if (utils.isEmpty(module)) { return res.status(404).json({ message: 'no modules found' }); }
+
+                res.json(module);
+            });
 
         }
 

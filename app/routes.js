@@ -8,6 +8,7 @@ module.exports = function(app, passport, auth) {
     app.get('/api', function(req, res) {
         res.json({ 
             users_url: '/api/users/{user}',
+            repos_url: '/api/users/{user}/repos/{repo}',
             modules_urls: '/api/modules/{module}',
 
         });
@@ -28,10 +29,12 @@ module.exports = function(app, passport, auth) {
     var users_repos = require('./controllers/users.repos')(passport);
 
     app.get('/api/users/:username/repos', users_repos.all);
+    app.get('/api/users/:username/repos.json', users_repos.all); // Dofus Market place need file format .json
     app.post('api/users/:username/repos', users_repos.add);
     app.get('/api/users/:username/repos/:repo', users_repos.get);
     app.put('/api/users/:username/repos/:repo', users_repos.update);
     app.delete('/api/users/:username/repos/:repo', users_repos.delete);
+    app.get('/api/users/:username/repos/search/:repo', users_repos.search);
 
     // --- MODULES ---
 

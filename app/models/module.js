@@ -4,8 +4,8 @@ var Schema   = mongoose.Schema;
 // name validators
 
 var name_validator = [
-    { validator: /^(.*)_(.*)$/, msg: 'module name must contain underscore' },
-    { validator: /^[a-zA-Z_]{3,20}$/, msg: 'module name must be greater or equal than 3 and less or equal than 20' }
+    /*{ validator: /^(.*)_(.*)$/, msg: 'module name must contain underscore' },*/
+    { validator: /^[a-zA-Z]{3,20}$/, msg: 'module name must be greater or equal than 3 and less or equal than 20' }
 ];
 
 // version validator
