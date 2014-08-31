@@ -40,7 +40,7 @@ module.exports = function(passport) {
 
         .get(function(req, res) {
 
-            User.find({ username: req.params.user_username }, { _id: false, __v: false, password: false }, function(err, user) {
+            User.findOne({ username: req.params.user_username }, { _id: false, __v: false, password: false }, function(err, user) {
                 if (err) { res.json({ message: err }); return; }
 
                 res.json(user);
