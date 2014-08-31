@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var User = require('../models/user');
+var Module = require('../models/module');
 
 function isEmpty(obj) {
     if(obj == null) { return true; }
@@ -86,7 +87,20 @@ module.exports = function(passport) {
                 res.json({ message: 'user deleted' });
             });
 
-        })
+        });
+
+    router.route('/:user_username/repos')
+
+        .get(function(req, res) {
+
+            Module.find({ author: req.params.user_username }, { _id: false, __v: false }, function(err, module) {
+                if (err) { return res.json({ message: err }); }
+                if (isEmpty(module)) { return res.status(404).json({ message: 'no modules found' }); }
+
+                res.json(module);
+            });
+
+        });
 
     return router;
 }
