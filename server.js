@@ -9,11 +9,12 @@ var auth   = require('./app/auth')(passport);
 var port   = 8888;
 var app    = express();
 
-require('./app/routes')(app, passport, auth);
-
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(passport.initialize());
+
+require('./app/routes')(app, passport, auth);
+
 app.listen(port);
 
 console.log('Server start on port ' + port);
