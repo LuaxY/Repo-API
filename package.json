@@ -1,11 +1,31 @@
 {
   "name": "repo-api",
+  "version": "0.0.1",
+  "description": "Repository API RESTful for Dofus Modules Marketplace",
+  "author": "Yann Guineau <yann.guineau@voidmx.net",
+  "script": {
+    "start": "node server.js"
+  },
   "main": "server.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/LuaxY/Repo-API.git"
+  },
+  "bugs": {
+    "url": "https://github.com/LuaxY/Repo-API/issues"
+  },
+  "keyworkds": [
+    "repository",
+    "modules",
+    "dofus",
+    "marketplace"
+  ],
   "dependencies": {
-    "express": "4.8.7",
-    "mongoose": "3.8.15",
-    "body-parser": "1.6.7",
-    "passport": "0.2.0",
-    "pkginfo": "0.3.0"
-  }
+    "express": "~4.8.7",
+    "mongoose": "~3.8.15",
+    "body-parser": "~1.6.7",
+    "passport": "~0.2.0",
+    "pkginfo": "~0.3.0"
+  },
+  "license": "GPLv3"
 }
